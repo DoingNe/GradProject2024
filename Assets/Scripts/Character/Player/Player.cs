@@ -4,17 +4,25 @@ using UnityEngine;
 
 public class Player : Character
 {
-    protected Rigidbody2D rigidBody;
-    protected Animator animator;
+    Rigidbody2D rigidBody;
+    SpriteRenderer spriteRenderer;
+
+    float moveDir;
+    float refVelocity;
+
+    public Animator animator;
 
     [SerializeField]
-    float speed;
-    [SerializeField]
-    float jump;
-    [SerializeField]
-    bool isJumping;
+    Transform groundCheck;
 
-    float horizontal;
+    [SerializeField]
+    float speed = 4500f;
+    [SerializeField]
+    float maxSpeed = 10f;
+    [SerializeField]
+    float jump = 30f;
+    [SerializeField]
+    float slideRate = 0.35f;
 
     void Awake()
     {
@@ -23,52 +31,88 @@ public class Player : Character
 
     void Update()
     {
-        horizontal = Input.GetAxisRaw("Horizontal");
-
-        // Jump
-        if (Input.GetButtonDown("Jump") && !isJumping)
-        {
-            isJumping = true;
-            rigidBody.AddForce(Vector2.up * jump, ForceMode2D.Impulse);
-        }
-
-        // stop
-        if (Input.GetButtonUp("Horizontal"))
-        {
-            rigidBody.velocity = new Vector2(rigidBody.velocity.normalized.x * 0.5f, rigidBody.velocity.y);
-        }
-
-        if (rigidBody.velocity.y > 0)
-        {
-            Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Platform"), true);
-            Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("DamagedPlayer"), LayerMask.NameToLayer("Platform"), true);
-        }
-
-        if (rigidBody.velocity.y < 0)
-        {
-            Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Platform"), false);
-            Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("DamagedPlayer"), LayerMask.NameToLayer("Platform"), false);
-
-            RaycastHit2D rayCast = Physics2D.Raycast(rigidBody.position, Vector2.down, 1f, LayerMask.GetMask("Platform"));
-
-            if (rayCast.collider != null)
-            {
-                if (rayCast.distance < 0.6f)
-                {
-                    isJumping = false;
-                }
-            }
-        }
+        PlayerInput();
+        PlayerAnimate();
+        GroundFriction();
     }
 
     void FixedUpdate()
     {
-        rigidBody.AddForce(Vector2.right * horizontal, ForceMode2D.Impulse);
+        if (PlayerFlip() || Mathf.Abs(moveDir * rigidBody.velocity.x) < maxSpeed)
+            rigidBody.AddForce(new Vector2(moveDir * Time.fixedDeltaTime * speed, 0f));
+    }
 
-        if (rigidBody.velocity.x > speed)
-            rigidBody.velocity = new Vector2(speed, rigidBody.velocity.y);
-        else if (rigidBody.velocity.x < speed * (-1))
-            rigidBody.velocity = new Vector2(speed * (-1), rigidBody.velocity.y);
+    // Init Component
+    protected void Init()
+    {
+        rigidBody = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
+    void PlayerInput()
+    {
+        moveDir = Input.GetAxisRaw("Horizontal");
+
+        if(Input.GetKeyDown(KeyCode.Space) && isGrounded())
+        {
+            rigidBody.velocity = new Vector2(rigidBody.velocity.x, jump);
+        }
+    }
+
+    void PlayerAnimate()
+    {
+        if (isGrounded())
+        {
+            if (Mathf.Abs(moveDir) <= 0.01f || Mathf.Abs(rigidBody.velocity.x) <= 0.01f && Mathf.Abs(rigidBody.velocity.y) <= 0.01f)
+            {
+                //AnimationSetTrigger("Idle");
+            }
+            else if(Mathf.Abs(rigidBody.velocity.x) > 0.01f && Mathf.Abs(rigidBody.velocity.y) <= 0.01f)
+            {
+                //AnimationSetTrigger("Run");
+            }
+        }
+    }
+
+    void GroundFriction()
+    {
+        if (isGrounded())
+            if (Mathf.Abs(moveDir) <= 0.01f)
+                rigidBody.velocity = new Vector2(Mathf.SmoothDamp(rigidBody.velocity.x, 0f, ref refVelocity, slideRate), rigidBody.velocity.y);
+    }
+
+    bool PlayerFlip()
+    {
+        bool flipSprite = (spriteRenderer.flipX ? (moveDir > 0f) : (moveDir < 0f));
+
+        if (flipSprite)
+        {
+            spriteRenderer.flipX = !spriteRenderer.flipX;
+            GroundFriction();
+        }
+
+        return flipSprite;
+    }
+
+    // Ground Check
+    bool isGrounded()
+    {
+        return Physics2D.OverlapCapsule(groundCheck.position, new Vector2(0.3f, 0.15f), CapsuleDirection2D.Horizontal, 0, LayerMask.GetMask("Platform"));
+    }
+
+    bool IsPlayingAnimation(string animName)
+    {
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName(animName))
+            return true;
+
+        return false;
+    }
+
+    void AnimationSetTrigger(string animName)
+    {
+        if (!IsPlayingAnimation(animName))
+            animator.SetTrigger(animName);
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -80,17 +124,10 @@ public class Player : Character
         }
     }
 
-    protected void Init()
-    {
-        rigidBody = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
-    }
-
     protected override IEnumerator OnDamaged(Vector2 targetPos)
     {
         gameObject.layer = LayerMask.NameToLayer("DamagedPlayer");
 
-        var spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.color = new Color(0, 1, 0, 0.4f);
 
         int d = transform.position.x - targetPos.x > 0 ? 1 : -1;

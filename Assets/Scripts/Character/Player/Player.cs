@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    GameManager gameManager;
     Rigidbody2D rigidBody;
     SpriteRenderer spriteRenderer;
 
@@ -60,6 +61,8 @@ public class Player : MonoBehaviour
     // Init Component
     protected void Init()
     {
+        GameManager.instance.Player = this;
+        
         rigidBody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();

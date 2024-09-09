@@ -19,13 +19,13 @@ public class Mob : MonoBehaviour
     public bool mobDirRight;
 
     [SerializeField]
-    float speed = 5f;
+    protected float speed = 5f;
     [SerializeField]
-    float jump = 10f;
+    protected float jump = 10f;
     [SerializeField]
-    float atkCoolTime = 3f;
+    protected float atkCoolTime = 3f;
     [SerializeField]
-    float atkCoolTimeCalc = 3f;
+    protected float atkCoolTimeCalc = 3f;
 
     protected void Awake()
     {
@@ -38,8 +38,8 @@ public class Mob : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
         animator = GetComponent<Animator>();
 
-        //StartCoroutine(CalcCoolTime());
-        //StartCoroutine(ResetCollider());
+        StartCoroutine(CalcCoolTime());
+        StartCoroutine(ResetCollider());
     }
 
     IEnumerator ResetCollider()
@@ -106,6 +106,16 @@ public class Mob : MonoBehaviour
 
     protected bool IsPlayerDirection()
     {
+        if (transform.position.x < GameManager.instance.Player.transform.position.x ? mobDirRight : !mobDirRight)
+            return true;
+
         return false;
+    }
+
+    protected void GroundCheck()
+    {
+        if (Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.size, 0, Vector2.down, 0.05f, layerMask))
+            isGround = true;
+        else isGround = false;
     }
 }

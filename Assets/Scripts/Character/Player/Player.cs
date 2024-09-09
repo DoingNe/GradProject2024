@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : Character
+public class Player : MonoBehaviour
 {
     Rigidbody2D rigidBody;
     SpriteRenderer spriteRenderer;
@@ -11,6 +11,8 @@ public class Player : Character
     float refVelocity;
 
     public Animator animator;
+    public GameObject hitBoxCollider;
+    public GameObject weaponCollider;
 
     [SerializeField]
     Transform groundCheck;
@@ -23,6 +25,10 @@ public class Player : Character
     float jump = 30f;
     [SerializeField]
     float slideRate = 0.35f;
+    [SerializeField]
+    float hitRecovery = 0.2f;
+    [SerializeField]
+    bool isGround;
 
     void Awake()
     {
@@ -32,14 +38,23 @@ public class Player : Character
     void Update()
     {
         PlayerInput();
+        isGrounded();
         PlayerAnimate();
         GroundFriction();
     }
 
     void FixedUpdate()
     {
-        if (PlayerFlip() || Mathf.Abs(moveDir * rigidBody.velocity.x) < maxSpeed)
-            rigidBody.AddForce(new Vector2(moveDir * Time.fixedDeltaTime * speed, 0f));
+        if (!IsPlayingAnimation("NormalAttack"))
+        {
+            if (PlayerFlip() || Mathf.Abs(moveDir * rigidBody.velocity.x) < maxSpeed)
+                rigidBody.AddForce(new Vector2(moveDir * Time.fixedDeltaTime * speed, 0f));
+            else
+            {
+                rigidBody.velocity = new Vector2(moveDir * maxSpeed, rigidBody.velocity.y);
+            }
+        }
+        
     }
 
     // Init Component
@@ -48,47 +63,70 @@ public class Player : Character
         rigidBody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        animator.SetBool("isMelee", true);
+
+        AnimationSetTrigger("Idle");
+        Debug.Log("Idle");
+
+        StartCoroutine(ResetCollider());
     }
 
     void PlayerInput()
     {
         moveDir = Input.GetAxisRaw("Horizontal");
 
-        if(Input.GetKeyDown(KeyCode.Space) && isGrounded())
+        if (Input.GetKeyDown(KeyCode.Space) && isGround && !IsPlayingAnimation("NormalAttack"))
         {
             rigidBody.velocity = new Vector2(rigidBody.velocity.x, jump);
+            AnimationSetTrigger("Jump");
+            Debug.Log("Jump");
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            AnimationSetTrigger("NormalAttack");
+            Debug.Log("NormalAttack");
         }
     }
 
     void PlayerAnimate()
     {
-        if (isGrounded())
+        if (isGround)
         {
             if (Mathf.Abs(moveDir) <= 0.01f || Mathf.Abs(rigidBody.velocity.x) <= 0.01f && Mathf.Abs(rigidBody.velocity.y) <= 0.01f)
             {
-                //AnimationSetTrigger("Idle");
+                AnimationSetTrigger("Idle");
+                Debug.Log("Idle");
             }
-            else if(Mathf.Abs(rigidBody.velocity.x) > 0.01f && Mathf.Abs(rigidBody.velocity.y) <= 0.01f)
+            else if (Mathf.Abs(rigidBody.velocity.x) > 0.01f && Mathf.Abs(rigidBody.velocity.y) <= 0.01f)
             {
-                //AnimationSetTrigger("Run");
+                AnimationSetTrigger("Run");
+                Debug.Log("Run");
             }
+        }
+        else if (rigidBody.velocity.y < 0 && !IsPlayingAnimation("Jump"))
+        {
+            AnimationSetTrigger("Fall");
+            Debug.Log("Fall");
         }
     }
 
     void GroundFriction()
     {
-        if (isGrounded())
+        if (isGround)
             if (Mathf.Abs(moveDir) <= 0.01f)
                 rigidBody.velocity = new Vector2(Mathf.SmoothDamp(rigidBody.velocity.x, 0f, ref refVelocity, slideRate), rigidBody.velocity.y);
     }
 
     bool PlayerFlip()
     {
-        bool flipSprite = (spriteRenderer.flipX ? (moveDir > 0f) : (moveDir < 0f));
+        bool flipSprite = ((transform.localScale.x < 0) ? (moveDir > 0f) : (moveDir < 0f)); // right : left
 
         if (flipSprite)
         {
-            spriteRenderer.flipX = !spriteRenderer.flipX;
+            transform.localScale = new Vector3(transform.localScale.x * (-1), transform.localScale.y, transform.localScale.z);
+            //spriteRenderer.flipX = !spriteRenderer.flipX;
             GroundFriction();
         }
 
@@ -96,12 +134,17 @@ public class Player : Character
     }
 
     // Ground Check
-    bool isGrounded()
+    void isGrounded()
     {
-        return Physics2D.OverlapCapsule(groundCheck.position, new Vector2(0.3f, 0.15f), CapsuleDirection2D.Horizontal, 0, LayerMask.GetMask("Platform"));
+        if (Physics2D.OverlapCapsule(groundCheck.position, new Vector2(0.3f, 0.15f), CapsuleDirection2D.Horizontal, 0, LayerMask.GetMask("Platform")))
+        {
+            animator.ResetTrigger("Idle");
+            isGround = true;
+        }
+        else isGround = false;
     }
 
-    bool IsPlayingAnimation(string animName)
+    public bool IsPlayingAnimation(string animName)
     {
         if (animator.GetCurrentAnimatorStateInfo(0).IsName(animName))
             return true;
@@ -109,33 +152,27 @@ public class Player : Character
         return false;
     }
 
-    void AnimationSetTrigger(string animName)
+    public void AnimationSetTrigger(string animName)
     {
         if (!IsPlayingAnimation(animName))
             animator.SetTrigger(animName);
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
+    IEnumerator ResetCollider()
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+        while (true)
         {
-            Debug.Log("Attacked by enemy!");
-            Damage(10, collision.transform.position);
+            yield return null;
+            if (!hitBoxCollider.activeInHierarchy)
+            {
+                yield return new WaitForSeconds(hitRecovery);
+                hitBoxCollider.SetActive(true);
+            }
         }
     }
 
-    protected override IEnumerator OnDamaged(Vector2 targetPos)
+    public void WeaponColliderOnOff()
     {
-        gameObject.layer = LayerMask.NameToLayer("DamagedPlayer");
-
-        spriteRenderer.color = new Color(0, 1, 0, 0.4f);
-
-        int d = transform.position.x - targetPos.x > 0 ? 1 : -1;
-        rigidBody.AddForce(new Vector2(d, 1) * 10, ForceMode2D.Impulse);
-
-        yield return new WaitForSeconds(1.5f);
-
-        gameObject.layer = LayerMask.NameToLayer("Player");
-        spriteRenderer.color = new Color(0, 1, 0, 1);
+        weaponCollider.SetActive(!weaponCollider.activeInHierarchy);
     }
 }

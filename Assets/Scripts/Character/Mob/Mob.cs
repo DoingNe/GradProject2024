@@ -2,94 +2,110 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mob : Character
+public class Mob : MonoBehaviour
 {
-    protected Rigidbody2D rigidBody;
-    protected Animator animator;
+    protected Rigidbody2D rigidbody;
+    protected BoxCollider2D boxCollider;
 
-    GameObject player;
+    public GameObject hitBoxCollider;
+    public Animator animator;
+    public LayerMask layerMask;
+
+    public int currentHp = 1;
+
+    public bool isHit = false;
+    public bool isGround = true;
+    public bool canAtk = true;
+    public bool mobDirRight;
 
     [SerializeField]
-    bool isPatrolling;
+    float speed = 5f;
     [SerializeField]
-    bool isChasing;
+    float jump = 10f;
     [SerializeField]
-    int direction = 0; // -1 = left, 0 = stop, 1 = right
+    float atkCoolTime = 3f;
     [SerializeField]
-    float speed = 3f;
-    [SerializeField]
-    float detectionDistance = 5f;
+    float atkCoolTimeCalc = 3f;
 
-    void Awake()
+    protected void Awake()
     {
-        rigidBody = GetComponent<Rigidbody2D>();
+        Init();
+    }
+
+    void Init()
+    {
+        rigidbody = GetComponent<Rigidbody2D>();
+        boxCollider = GetComponent<BoxCollider2D>();
         animator = GetComponent<Animator>();
 
-        isChasing = false;
-
-        // Start Patrol
-        isPatrolling = true;
-        Invoke("MobPatrol", Random.Range(3, 6));
+        //StartCoroutine(CalcCoolTime());
+        //StartCoroutine(ResetCollider());
     }
 
-    void FixedUpdate()
+    IEnumerator ResetCollider()
     {
-        // If enemy is chasing the player
-        if (isChasing)
+        while (true)
         {
-            if (transform.position.x < player.transform.position.x) // enemy is on left of player
+            yield return null;
+
+            if (!hitBoxCollider.activeInHierarchy)
             {
-                direction = 1; // chase to right
-            }
-            else if (transform.position.x > player.transform.position.x) // enemy is on right of player
-            {
-                direction = -1; // chase to left
+                yield return new WaitForSeconds(0.5f);
+                hitBoxCollider.SetActive(true);
+                isHit = false;
             }
         }
+    }
 
-        // Move
-        rigidBody.velocity = new Vector2(direction * speed, rigidBody.velocity.y);
-
-        // Player detection
-        RaycastHit2D playerRayCast = Physics2D.Raycast(transform.position, new Vector2(direction, 0), detectionDistance, LayerMask.GetMask("Player"));
-
-        Debug.DrawRay(transform.position, new Vector2(direction, 0) * detectionDistance, Color.green);
-
-        if (playerRayCast.collider != null) // Detected player
+    IEnumerator CalcCoolTime()
+    {
+        while (true)
         {
-            // Stop patrol
-            isPatrolling = false;
-            CancelInvoke("MobPatrol");
+            yield return null;
 
-            // Chase player
-            isChasing = true;
-            player = playerRayCast.transform.gameObject;
+            if (!canAtk)
+            {
+                atkCoolTimeCalc -= Time.deltaTime;
+                if (atkCoolTimeCalc <= 0)
+                {
+                    atkCoolTimeCalc = atkCoolTime;
+                    canAtk = true;
+                }
+            }
         }
+    }
+
+    public bool IsPlayingAnimation(string animName)
+    {
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName(animName))
+            return true;
+
+        return false;
+    }
+
+    public void AnimationSetTrigger(string animName)
+    {
+        if (!IsPlayingAnimation(animName))
+            animator.SetTrigger(animName);
+    }
+
+    protected void MobFlip()
+    {
+        mobDirRight = !mobDirRight;
+
+        Vector3 thisScale = transform.localScale;
+
+        if (mobDirRight)
+            thisScale.x = -Mathf.Abs(thisScale.x);
         else
-        {
-            isChasing = false; // Stop chasing
-            isPatrolling = true; // Start patrol
-        }
+            thisScale.x = Mathf.Abs(thisScale.x);
 
-        // Platform detection
-        Vector2 frontVec = new Vector2(direction * 0.5f + rigidBody.position.x, rigidBody.position.y);
-        RaycastHit2D platformRayCast = Physics2D.Raycast(frontVec, Vector2.down, 1, LayerMask.GetMask("Platform"));
-
-        if (platformRayCast.collider == null) // Detected the end of platform
-        {
-            direction *= -1; // prevent falling
-            if (isPatrolling)
-            {
-                CancelInvoke("MobPatrol");
-                MobPatrol();
-            }
-        }
+        transform.localScale = thisScale;
+        rigidbody.velocity = Vector2.zero;
     }
 
-    void MobPatrol()
+    protected bool IsPlayerDirection()
     {
-        direction = Random.Range(-1, 2); // -1 ~ 1
-        float nextTime = Random.Range(1f, 3f); // repeat every 1~3 seconds
-        Invoke("MobPatrol", nextTime); 
+        return false;
     }
 }

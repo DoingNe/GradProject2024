@@ -182,6 +182,28 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1101 &-3710462222108047170
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions: []
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 0}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 1
+  serializedVersion: 3
+  m_TransitionDuration: 0
+  m_TransitionOffset: 0
+  m_ExitTime: 1
+  m_HasExitTime: 1
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!1101 &-3400716224214340979
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -292,7 +314,8 @@ AnimatorState:
   m_Name: PlayerMeleeDie
   m_Speed: 1
   m_CycleOffset: 0
-  m_Transitions: []
+  m_Transitions:
+  - {fileID: -3710462222108047170}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -513,22 +536,22 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 5620598605247159106}
-    m_Position: {x: 470, y: 10, z: 0}
+    m_Position: {x: 490, y: -80, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -8308205739642590931}
-    m_Position: {x: 720, y: 130, z: 0}
+    m_Position: {x: 740, y: 40, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 6306471581473634933}
-    m_Position: {x: 720, y: -160, z: 0}
+    m_Position: {x: 740, y: -250, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -988536425442515875}
-    m_Position: {x: 1090, y: 100, z: 0}
+    m_Position: {x: 1110, y: 10, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -3721241888973040299}
-    m_Position: {x: 910, y: 10, z: 0}
+    m_Position: {x: 930, y: -80, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1251058461816677661}
-    m_Position: {x: 470, y: -160, z: 0}
+    m_Position: {x: 490, y: -250, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 3259644905724464760}
     m_Position: {x: 190, y: 130, z: 0}
@@ -537,9 +560,9 @@ AnimatorStateMachine:
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
-  m_AnyStatePosition: {x: -80, y: -80, z: 0}
+  m_AnyStatePosition: {x: -10, y: -90, z: 0}
   m_EntryPosition: {x: -80, y: 130, z: 0}
-  m_ExitPosition: {x: 1500, y: 180, z: 0}
+  m_ExitPosition: {x: 1400, y: 80, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: 3259644905724464760}
 --- !u!1102 &3259644905724464760

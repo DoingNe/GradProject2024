@@ -8,6 +8,7 @@ public class Mob : MonoBehaviour
     protected BoxCollider2D boxCollider;
 
     public GameObject hitBoxCollider;
+    public GameObject attackCollider;
     public Animator animator;
     public LayerMask layerMask;
 
@@ -16,8 +17,10 @@ public class Mob : MonoBehaviour
     public bool isHit = false;
     public bool isGround = true;
     public bool canAtk = true;
-    public bool mobDirRight;
+    public bool mobDirRight = true;
 
+    [SerializeField]
+    protected int atk = 1;
     [SerializeField]
     protected float speed = 5f;
     [SerializeField]
@@ -28,11 +31,6 @@ public class Mob : MonoBehaviour
     protected float atkCoolTimeCalc = 3f;
 
     protected void Awake()
-    {
-        Init();
-    }
-
-    void Init()
     {
         rigidbody = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
@@ -51,6 +49,7 @@ public class Mob : MonoBehaviour
             if (!hitBoxCollider.activeInHierarchy)
             {
                 yield return new WaitForSeconds(0.5f);
+                AnimationSetTrigger("Walk");
                 hitBoxCollider.SetActive(true);
                 isHit = false;
             }
@@ -94,19 +93,22 @@ public class Mob : MonoBehaviour
         mobDirRight = !mobDirRight;
 
         Vector3 thisScale = transform.localScale;
-
         if (mobDirRight)
-            thisScale.x = -Mathf.Abs(thisScale.x);
-        else
+        {
             thisScale.x = Mathf.Abs(thisScale.x);
-
+        }
+        else
+        {
+            thisScale.x = -Mathf.Abs(thisScale.x);
+            //thisScale.x = Mathf.Abs(thisScale.x);
+        }
         transform.localScale = thisScale;
         rigidbody.velocity = Vector2.zero;
     }
 
     protected bool IsPlayerDirection()
     {
-        if (transform.position.x < GameManager.instance.Player.transform.position.x ? mobDirRight : !mobDirRight)
+        if (transform.position.x < GameManager.Instance.Player.transform.position.x ? mobDirRight : !mobDirRight)
             return true;
 
         return false;
@@ -117,5 +119,46 @@ public class Mob : MonoBehaviour
         if (Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.size, 0, Vector2.down, 0.05f, layerMask))
             isGround = true;
         else isGround = false;
+    }
+
+    public void AttackColliderOnOff()
+    {
+        attackCollider.SetActive(!attackCollider.activeInHierarchy);
+    }
+
+    public void setDeactive()
+    {
+        this.gameObject.SetActive(false);
+        //Destroy(this.gameObject);
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHp -= damage;
+        isHit = true;
+        if (currentHp <= 0)
+        {
+            AnimationSetTrigger("Die");
+        }
+        else
+        {
+            AnimationSetTrigger("Hit");
+            rigidbody.velocity = Vector2.zero;
+
+            if (transform.position.x > GameManager.Instance.Player.transform.position.x)
+                rigidbody.velocity = new Vector2(10f, 1f);
+            else
+                rigidbody.velocity = new Vector2(-10f, 1f);
+        }
+
+        hitBoxCollider.SetActive(false);
+    }
+
+    protected void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.transform.CompareTag("PlayerAttack"))
+        {
+            TakeDamage(GameManager.Instance.Player.Atk);
+        }
     }
 }

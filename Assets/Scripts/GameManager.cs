@@ -4,37 +4,43 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager instance = null;
+    private static GameManager instance;
 
+    public Camera camera;
     public Player Player;
 
     public int currentStage = 0;    // 0 = First stage, 1 = Second stage, 2 = Boss room
     public int maxEnemy = 15;
     public bool isGameOver = false;
 
+    public GameObject[] stageList;
     public GameObject[] currentSpawnedList;
     public GameObject[] enemyList1;
     public GameObject[] enemyList2;
     public Transform[] enemySpawnPointGroup;   // 0 = First stage, 1 = Second stage, 2 = Boss room
     public Transform[] points;
 
-    void Awake()
+    public static GameManager Instance
     {
-        if (instance == null)
+        get
         {
-            instance = this;
+            if (instance == null)
+            {
+                instance = FindObjectOfType<GameManager>();
+                if (instance == null)
+                {
+                    var instanceContainer = new GameObject("GameManager");
+                    instance = instanceContainer.AddComponent<GameManager>();
+                }
+            }
+            return instance;
         }
-        else if (instance != this)
-        {
-            Destroy(this.gameObject);
-        }
-
-        DontDestroyOnLoad(this.gameObject);
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        camera = Camera.main;
         points = enemySpawnPointGroup[currentStage].GetComponentsInChildren<Transform>();
     }
 

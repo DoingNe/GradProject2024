@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    GameManager gameManager;
     Rigidbody2D rigidBody;
     SpriteRenderer spriteRenderer;
 
@@ -15,9 +14,17 @@ public class Player : MonoBehaviour
     public GameObject hitBoxCollider;
     public GameObject weaponCollider;
 
+    public GameObject Door;
+
     [SerializeField]
     Transform groundCheck;
 
+    [SerializeField]
+    int hp = 30;
+    [SerializeField]
+    int atk = 1;
+    [SerializeField]
+    int coin = 0;
     [SerializeField]
     float speed = 4500f;
     [SerializeField]
@@ -30,6 +37,44 @@ public class Player : MonoBehaviour
     float hitRecovery = 0.2f;
     [SerializeField]
     bool isGround;
+    [SerializeField]
+    bool canInteract = false;
+
+    public int Hp
+    {
+        get
+        {
+            return hp;
+        }
+        set
+        {
+            hp = value;
+        }
+    }
+
+    public int Coin
+    {
+        get
+        {
+            return coin;
+        }
+        set
+        {
+            coin += value;
+        }
+    }
+
+    public int Atk
+    {
+        get
+        {
+            return atk;
+        }
+        set
+        {
+            atk += value;
+        }
+    }
 
     void Awake()
     {
@@ -61,16 +106,17 @@ public class Player : MonoBehaviour
     // Init Component
     protected void Init()
     {
-        GameManager.instance.Player = this;
+        GameManager.Instance.Player = this;
         
         rigidBody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
 
+        StartCoroutine(CameraMovement.Instance.FadeIn());
+
         animator.SetBool("isMelee", true);
 
         AnimationSetTrigger("Idle");
-        Debug.Log("Idle");
 
         StartCoroutine(ResetCollider());
     }
@@ -83,13 +129,19 @@ public class Player : MonoBehaviour
         {
             rigidBody.velocity = new Vector2(rigidBody.velocity.x, jump);
             AnimationSetTrigger("Jump");
-            Debug.Log("Jump");
         }
 
         if (Input.GetMouseButtonDown(0))
         {
             AnimationSetTrigger("NormalAttack");
-            Debug.Log("NormalAttack");
+        }
+
+        if(Input.GetKeyDown(KeyCode.LeftShift) && canInteract)
+        {
+            StartCoroutine(CameraMovement.Instance.FadeOut());
+            GameManager.Instance.currentStage++;
+            transform.position = Door.transform.GetChild(0).position;
+            StartCoroutine(CameraMovement.Instance.FadeIn());
         }
     }
 
@@ -100,18 +152,15 @@ public class Player : MonoBehaviour
             if (Mathf.Abs(moveDir) <= 0.01f || Mathf.Abs(rigidBody.velocity.x) <= 0.01f && Mathf.Abs(rigidBody.velocity.y) <= 0.01f)
             {
                 AnimationSetTrigger("Idle");
-                Debug.Log("Idle");
             }
             else if (Mathf.Abs(rigidBody.velocity.x) > 0.01f && Mathf.Abs(rigidBody.velocity.y) <= 0.01f)
             {
                 AnimationSetTrigger("Run");
-                Debug.Log("Run");
             }
         }
         else if (rigidBody.velocity.y < 0 && !IsPlayingAnimation("Jump"))
         {
             AnimationSetTrigger("Fall");
-            Debug.Log("Fall");
         }
     }
 
@@ -129,7 +178,6 @@ public class Player : MonoBehaviour
         if (flipSprite)
         {
             transform.localScale = new Vector3(transform.localScale.x * (-1), transform.localScale.y, transform.localScale.z);
-            //spriteRenderer.flipX = !spriteRenderer.flipX;
             GroundFriction();
         }
 
@@ -177,5 +225,23 @@ public class Player : MonoBehaviour
     public void WeaponColliderOnOff()
     {
         weaponCollider.SetActive(!weaponCollider.activeInHierarchy);
+    }
+
+    public void TakeDamage(int damage)
+    {
+        Hp -= damage;
+        hitBoxCollider.SetActive(false);
+        StartCoroutine(ResetCollider());
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("InteractDoor"))
+            canInteract = true;
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("InteractDoor"))
+            canInteract = false;
     }
 }

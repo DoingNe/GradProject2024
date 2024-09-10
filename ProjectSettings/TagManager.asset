@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - PlayerAttack
+  - PlayerHitBox
   layers:
   - Default
   - TransparentFX
@@ -12,15 +14,15 @@ TagManager:
   - Water
   - UI
   - Platform
-  - 
   - Player
-  - DamagedPlayer
+  - PlayerHitBox
   - Enemy
+  - EnemyHitBox
   - PlayerAttack
   - EnemyAttack
   - Obstacle
-  - 
-  - 
+  - Check
+  - InteractDoor
   - 
   - 
   - 

@@ -10,15 +10,6 @@ public class GameManager : MonoBehaviour
     public Player Player;
 
     public int currentStage = 0;    // 0 = First stage, 1 = Second stage, 2 = Boss room
-    public int maxEnemy = 15;
-    public bool isGameOver = false;
-
-    public GameObject[] stageList;
-    public GameObject[] currentSpawnedList;
-    public GameObject[] enemyList1;
-    public GameObject[] enemyList2;
-    public Transform[] enemySpawnPointGroup;   // 0 = First stage, 1 = Second stage, 2 = Boss room
-    public Transform[] points;
 
     public static GameManager Instance
     {
@@ -32,6 +23,7 @@ public class GameManager : MonoBehaviour
                     var instanceContainer = new GameObject("GameManager");
                     instance = instanceContainer.AddComponent<GameManager>();
                 }
+                DontDestroyOnLoad(instance.gameObject);
             }
             return instance;
         }
@@ -41,7 +33,6 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         camera = Camera.main;
-        points = enemySpawnPointGroup[currentStage].GetComponentsInChildren<Transform>();
+        Player = FindObjectOfType<Player>();
     }
-
 }

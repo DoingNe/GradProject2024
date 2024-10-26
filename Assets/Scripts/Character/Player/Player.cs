@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -20,11 +21,13 @@ public class Player : MonoBehaviour
     Transform groundCheck;
 
     [SerializeField]
+    int hpMax = 30;
+    [SerializeField]
     int hp = 30;
     [SerializeField]
     int atk = 1;
     [SerializeField]
-    int coin = 0;
+    int gold = 0;
     [SerializeField]
     float speed = 4500f;
     [SerializeField]
@@ -40,6 +43,17 @@ public class Player : MonoBehaviour
     [SerializeField]
     bool canInteract = false;
 
+    public int HPMax
+    {
+        get
+        {
+            return hpMax;
+        }
+        set
+        {
+            hpMax = value;
+        }
+    }
     public int Hp
     {
         get
@@ -52,15 +66,15 @@ public class Player : MonoBehaviour
         }
     }
 
-    public int Coin
+    public int Gold
     {
         get
         {
-            return coin;
+            return gold;
         }
         set
         {
-            coin += value;
+            gold += value;
         }
     }
 
@@ -139,7 +153,7 @@ public class Player : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.LeftShift) && canInteract)
         {
             StartCoroutine(CameraMovement.Instance.FadeOut());
-            GameManager.Instance.currentStage++;
+            ++GameManager.Instance.currentStage;
             transform.position = Door.transform.GetChild(0).position;
             StartCoroutine(CameraMovement.Instance.FadeIn());
         }
@@ -234,14 +248,29 @@ public class Player : MonoBehaviour
         StartCoroutine(ResetCollider());
     }
 
+    public void GameOver()
+    {
+        SceneManager.LoadScene("Result");
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
+        {
+            AnimationSetTrigger("Die");
+        }
         if (collision.gameObject.layer == LayerMask.NameToLayer("InteractDoor"))
+        {
             canInteract = true;
+            Door = collision.gameObject;
+        }
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("InteractDoor"))
+        {
             canInteract = false;
+            Door = null;
+        }
     }
 }

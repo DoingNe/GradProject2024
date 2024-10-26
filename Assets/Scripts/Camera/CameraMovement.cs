@@ -25,21 +25,26 @@ public class CameraMovement : MonoBehaviour
     public GameObject Player;
 
     public Image fadeImage;
-    public float fadeDuration = 1f;
+    float fadeDuration = 3f;
 
-    public float offsetY = 1f;
-    public float offsetZ = -10f;
-    public float smooth = 5f;
+    float offsetY = 1f;
+    float offsetZ = -10f;
+    float smooth = 5f;
 
-    public float maxX1 = 406f;
-    public float minX1 = -23f;
-    public float maxY1 = 8f;
-    public float minY1 = 4f;
+    float maxX1 = 406f;
+    float minX1 = -23f;
+    float maxY1 = 8f;
+    float minY1 = 4f;
 
-    public float maxX2 = 406f;
-    public float minX2 = -23f;
-    public float maxY2 = -78f;
-    public float minY2 = -81f;
+    float maxX2 = 406f;
+    float minX2 = -23f;
+    float maxY2 = -78f;
+    float minY2 = -81f;
+
+    float maxX3 = 20f;
+    float minX3 = -16f;
+    float maxY3 = -159f;
+    float minY3 = -159f;
 
     Vector3 target;
 
@@ -72,6 +77,14 @@ public class CameraMovement : MonoBehaviour
             if (transform.position.x < minX2) transform.position = new Vector3(minX2, transform.position.y, transform.position.z);
             if (transform.position.y > maxY2) transform.position = new Vector3(transform.position.x, maxY2, transform.position.z);
             if (transform.position.y < minY2) transform.position = new Vector3(transform.position.x, minY2, transform.position.z);
+        }
+
+        if (GameManager.Instance.currentStage == 2)
+        {
+            if (transform.position.x > maxX3) transform.position = new Vector3(maxX3, transform.position.y, transform.position.z);
+            if (transform.position.x < minX3) transform.position = new Vector3(minX3, transform.position.y, transform.position.z);
+            if (transform.position.y > maxY3) transform.position = new Vector3(transform.position.x, maxY3, transform.position.z);
+            if (transform.position.y < minY3) transform.position = new Vector3(transform.position.x, minY3, transform.position.z);
         }
     }
 

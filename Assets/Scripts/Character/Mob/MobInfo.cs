@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Boar : Mob
+public class MobInfo : Mob
 {
     public Transform[] wallCheck;
 

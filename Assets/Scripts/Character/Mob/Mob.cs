@@ -7,27 +7,28 @@ public class Mob : MonoBehaviour
     protected Rigidbody2D rigidbody;
     protected BoxCollider2D boxCollider;
 
+    public delegate void DeathAction();
+    public event DeathAction OnDeath;
+
     public GameObject hitBoxCollider;
     public GameObject attackCollider;
     public Animator animator;
     public LayerMask layerMask;
 
-    public int currentHp = 1;
+    public int currentHp;
 
     public bool isHit = false;
     public bool isGround = true;
     public bool canAtk = true;
     public bool mobDirRight = true;
 
-    [SerializeField]
-    protected int atk = 1;
+    public int atk;
+    public int gold;
     [SerializeField]
     protected float speed = 5f;
     [SerializeField]
     protected float jump = 10f;
-    [SerializeField]
     protected float atkCoolTime = 3f;
-    [SerializeField]
     protected float atkCoolTimeCalc = 3f;
 
     protected void Awake()
@@ -128,8 +129,8 @@ public class Mob : MonoBehaviour
 
     public void setDeactive()
     {
-        this.gameObject.SetActive(false);
-        //Destroy(this.gameObject);
+        OnDeath.Invoke();
+        Destroy(gameObject);
     }
 
     public void TakeDamage(int damage)

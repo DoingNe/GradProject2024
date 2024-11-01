@@ -17,30 +17,32 @@ public class Player : MonoBehaviour
 
     public GameObject Door;
 
+    public RectTransform heartPanel;
+    public GameObject heartImage;
+
+    public List<GameObject> heartImages = new List<GameObject>();
+
     [SerializeField]
     Transform groundCheck;
 
     [SerializeField]
-    int hpMax = 30;
+    int hpMax;
     [SerializeField]
-    int hp = 30;
+    int hp;
     [SerializeField]
-    int atk = 1;
+    int atk;
     [SerializeField]
     int gold = 0;
-    [SerializeField]
     float speed = 4500f;
     [SerializeField]
     float maxSpeed = 10f;
-    [SerializeField]
     float jump = 30f;
-    [SerializeField]
     float slideRate = 0.35f;
     [SerializeField]
-    float hitRecovery = 0.2f;
-    [SerializeField]
+    float hitRecovery = 1f;
     bool isGround;
-    [SerializeField]
+    public bool isInvulnerable = false;
+    bool canControl = true;
     bool canInteract = false;
 
     public int HPMax
@@ -121,6 +123,9 @@ public class Player : MonoBehaviour
     protected void Init()
     {
         GameManager.Instance.Player = this;
+
+        canControl = true;
+        canInteract = false;
         
         rigidBody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
@@ -133,29 +138,38 @@ public class Player : MonoBehaviour
         AnimationSetTrigger("Idle");
 
         StartCoroutine(ResetCollider());
+
+        for(int i = 0; i < HPMax; i++)
+        {
+            GameObject newHeart = Instantiate(heartImage, heartPanel);
+            heartImages.Add(newHeart);
+        }
     }
 
     void PlayerInput()
     {
-        moveDir = Input.GetAxisRaw("Horizontal");
-
-        if (Input.GetKeyDown(KeyCode.Space) && isGround && !IsPlayingAnimation("NormalAttack"))
+        if (canControl)
         {
-            rigidBody.velocity = new Vector2(rigidBody.velocity.x, jump);
-            AnimationSetTrigger("Jump");
-        }
+            moveDir = Input.GetAxisRaw("Horizontal");
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            AnimationSetTrigger("NormalAttack");
-        }
+            if (Input.GetKeyDown(KeyCode.Space) && isGround && !IsPlayingAnimation("NormalAttack"))
+            {
+                rigidBody.velocity = new Vector2(rigidBody.velocity.x, jump);
+                AnimationSetTrigger("Jump");
+            }
 
-        if(Input.GetKeyDown(KeyCode.LeftShift) && canInteract)
-        {
-            StartCoroutine(CameraMovement.Instance.FadeOut());
-            ++GameManager.Instance.currentStage;
-            transform.position = Door.transform.GetChild(0).position;
-            StartCoroutine(CameraMovement.Instance.FadeIn());
+            if (Input.GetMouseButtonDown(1))
+            {
+                AnimationSetTrigger("NormalAttack");
+            }
+
+            if (Input.GetKeyDown(KeyCode.LeftShift) && canInteract)
+            {
+                StartCoroutine(CameraMovement.Instance.FadeOut());
+                ++GameManager.Instance.currentStage;
+                transform.position = Door.transform.GetChild(0).position;
+                StartCoroutine(CameraMovement.Instance.FadeIn());
+            }
         }
     }
 
@@ -225,15 +239,11 @@ public class Player : MonoBehaviour
 
     IEnumerator ResetCollider()
     {
-        while (true)
-        {
-            yield return null;
-            if (!hitBoxCollider.activeInHierarchy)
-            {
-                yield return new WaitForSeconds(hitRecovery);
-                hitBoxCollider.SetActive(true);
-            }
-        }
+        isInvulnerable = true;
+
+        yield return new WaitForSeconds(hitRecovery);
+
+        isInvulnerable = false;
     }
 
     public void WeaponColliderOnOff()
@@ -241,11 +251,41 @@ public class Player : MonoBehaviour
         weaponCollider.SetActive(!weaponCollider.activeInHierarchy);
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, Vector2 knockbackDirection)
     {
+        if (isInvulnerable) return;
+
         Hp -= damage;
-        hitBoxCollider.SetActive(false);
+        Hp = Mathf.Clamp(Hp, 0, HPMax);
+
+        int heartsToRemove = heartImages.Count - hp;
+
+        for(int i = 0; i < heartsToRemove; i++)
+        {
+            if (heartImages.Count > 0)
+            {
+                GameObject heart = heartImages[heartImages.Count - 1];
+                heartImages.RemoveAt(heartImages.Count - 1);
+                Destroy(heart);
+            }
+        }
+
+        if (Hp <= 0)
+        {
+            Die();
+        }
+
+        rigidBody.velocity = Vector2.zero;
+        rigidBody.AddForce(-(knockbackDirection+new Vector2(0f, 0.5f)) * 15f, ForceMode2D.Impulse);
+        
         StartCoroutine(ResetCollider());
+    }
+
+    public void Die()
+    {
+        canControl = false;
+        rigidBody.velocity = Vector2.zero;
+        AnimationSetTrigger("Die");
     }
 
     public void GameOver()
@@ -257,12 +297,21 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
         {
-            AnimationSetTrigger("Die");
+            Die();
         }
         if (collision.gameObject.layer == LayerMask.NameToLayer("InteractDoor"))
         {
             canInteract = true;
             Door = collision.gameObject;
+        }
+        if(collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+        {
+            Mob collisionMob = collision.gameObject.GetComponent<Mob>();
+            if (collisionMob != null)
+            {
+                Vector2 direction = (transform.position - collision.transform.position).normalized;
+                TakeDamage(collisionMob.atk, -direction);
+            }
         }
     }
     private void OnTriggerExit2D(Collider2D collision)

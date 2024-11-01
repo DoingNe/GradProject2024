@@ -196,16 +196,15 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 64
-  currentHp: 1
+  currentHp: 3
   isHit: 0
   isGround: 1
   canAtk: 1
   mobDirRight: 1
   atk: 1
+  gold: 2
   speed: 5
   jump: 10
-  atkCoolTime: 3
-  atkCoolTimeCalc: 3
   wallCheck:
   - {fileID: 3657945342790414977}
   - {fileID: 7567129838823389925}

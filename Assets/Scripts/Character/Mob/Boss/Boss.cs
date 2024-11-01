@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Boss : MonoBehaviour
@@ -10,7 +11,6 @@ public class Boss : MonoBehaviour
     public int dashDamage;
     private float timeBtwDamage = 1.5f;
 
-    public Slider healthBar;
     private Animator anim;
     public bool isDead;
 
@@ -30,8 +30,11 @@ public class Boss : MonoBehaviour
         {
             timeBtwDamage -= Time.deltaTime;
         }
+    }
 
-        healthBar.value = health;
+    public void GameOver()
+    {
+        SceneManager.LoadScene("Result");
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

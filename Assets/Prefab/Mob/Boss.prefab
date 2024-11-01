@@ -198,6 +198,7 @@ GameObject:
   - component: {fileID: 921384500594260262}
   - component: {fileID: 4232237720386596417}
   - component: {fileID: 5763093486293069741}
+  - component: {fileID: 7787203948472724113}
   m_Layer: 9
   m_Name: Boss
   m_TagString: Untagged
@@ -215,7 +216,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -178, z: 0}
-  m_LocalScale: {x: -3, y: 3, z: 3}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1734046600730572378}
@@ -265,7 +266,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: bd4266ba007d9fc42ac0d624be10ab63, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4275fc6f1c4b174409c03ccee3d59e52, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -369,6 +370,23 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.5471284, y: 2.7737694}
   m_EdgeRadius: 0
+--- !u!114 &7787203948472724113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4979401645634196857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6eabad201f226a468658eac6a04d073, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 30
+  damage: 1
+  dashDamage: 3
+  healthBar: {fileID: 0}
+  isDead: 0
 --- !u!1 &6250224126548531985
 GameObject:
   m_ObjectHideFlags: 0

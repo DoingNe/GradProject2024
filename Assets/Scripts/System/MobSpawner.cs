@@ -29,7 +29,7 @@ public class MobSpawner : MonoBehaviour
 
     IEnumerator RespawnMob()
     {
-        float waitTime = Random.Range(3f, 5f);
+        float waitTime = Random.Range(5f, 10f);
         float alertTime = waitTime - 1f;
 
         SpriteRenderer spriteRenderer = gameObject.GetComponent<SpriteRenderer>();

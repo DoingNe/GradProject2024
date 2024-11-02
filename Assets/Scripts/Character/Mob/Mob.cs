@@ -139,6 +139,7 @@ public class Mob : MonoBehaviour
         isHit = true;
         if (currentHp <= 0)
         {
+            GameManager.Instance.Player.Gold += gold;
             AnimationSetTrigger("Die");
         }
         else

@@ -94,7 +94,7 @@ MonoBehaviour:
   canAtk: 1
   mobDirRight: 0
   atk: 1
-  gold: 1
+  gold: 10
   speed: 5
   jump: 10
   wallCheck:

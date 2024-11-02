@@ -9,7 +9,7 @@ public class SceneChangeBtn : MonoBehaviour
 
     public void MoveScene()
     {
-        if (sceneName != null)
+        if (sceneName != "")
         {
             SceneManager.LoadScene(sceneName);
         }

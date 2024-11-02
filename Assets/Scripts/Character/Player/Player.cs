@@ -109,11 +109,11 @@ public class Player : MonoBehaviour
     {
         if (!IsPlayingAnimation("NormalAttack"))
         {
-            if (PlayerFlip() || Mathf.Abs(moveDir * rigidBody.velocity.x) < maxSpeed)
+            if (PlayerFlip() || Mathf.Abs(moveDir * rigidBody.velocity.x) < maxSpeed * (0.05f * GameManager.Instance.playerStat[1]))
                 rigidBody.AddForce(new Vector2(moveDir * Time.fixedDeltaTime * speed, 0f));
             else
             {
-                rigidBody.velocity = new Vector2(moveDir * maxSpeed, rigidBody.velocity.y);
+                rigidBody.velocity = new Vector2(moveDir * maxSpeed * (0.05f * GameManager.Instance.playerStat[1]), rigidBody.velocity.y);
             }
         }
         

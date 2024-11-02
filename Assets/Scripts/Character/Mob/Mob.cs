@@ -139,7 +139,7 @@ public class Mob : MonoBehaviour
         isHit = true;
         if (currentHp <= 0)
         {
-            GameManager.Instance.Player.Gold += gold;
+            GameManager.Instance.Player.Gold += (int)(gold * (1 + 0.1f * (float)GameManager.Instance.playerStat[2]));
             AnimationSetTrigger("Die");
         }
         else
@@ -160,7 +160,7 @@ public class Mob : MonoBehaviour
     {
         if (collision.transform.CompareTag("PlayerAttack"))
         {
-            TakeDamage(GameManager.Instance.Player.Atk);
+            TakeDamage(GameManager.Instance.Player.Atk + GameManager.Instance.playerStat[0]);
         }
     }
 }

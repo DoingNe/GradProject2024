@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
     public Camera camera;
     public Player Player;
 
+    public int[] playerStat;        // 0 = atk, 1 = speed, 2 = gold
+
     public int currentStage = 0;    // 0 = First stage, 1 = Second stage, 2 = Boss room
 
     public static GameManager Instance
@@ -33,5 +35,6 @@ public class GameManager : MonoBehaviour
     {
         camera = Camera.main;
         Player = FindObjectOfType<Player>();
+        playerStat = new int[3];
     }
 }

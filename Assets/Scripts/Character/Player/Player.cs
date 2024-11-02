@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,6 +15,7 @@ public class Player : MonoBehaviour
     public Animator animator;
     public GameObject hitBoxCollider;
     public GameObject weaponCollider;
+    public TMP_Text tmpTxt;
 
     public GameObject Door;
 
@@ -36,14 +38,15 @@ public class Player : MonoBehaviour
     float speed = 4500f;
     [SerializeField]
     float maxSpeed = 10f;
-    float jump = 30f;
+    public float jump;
     float slideRate = 0.35f;
     [SerializeField]
     float hitRecovery = 1f;
     bool isGround;
     public bool isInvulnerable = false;
-    bool canControl = true;
-    bool canInteract = false;
+    public bool isPlaying;
+    public bool canControl = true;
+    public bool canInteract = false;
 
     public int HPMax
     {
@@ -76,7 +79,7 @@ public class Player : MonoBehaviour
         }
         set
         {
-            gold += value;
+            gold = value;
         }
     }
 
@@ -109,11 +112,11 @@ public class Player : MonoBehaviour
     {
         if (!IsPlayingAnimation("NormalAttack"))
         {
-            if (PlayerFlip() || Mathf.Abs(moveDir * rigidBody.velocity.x) < maxSpeed * (0.05f * GameManager.Instance.playerStat[1]))
+            if (PlayerFlip() || Mathf.Abs(moveDir * rigidBody.velocity.x) < maxSpeed * (1 + 0.05f * GameManager.Instance.playerStat[1]))
                 rigidBody.AddForce(new Vector2(moveDir * Time.fixedDeltaTime * speed, 0f));
             else
             {
-                rigidBody.velocity = new Vector2(moveDir * maxSpeed * (0.05f * GameManager.Instance.playerStat[1]), rigidBody.velocity.y);
+                rigidBody.velocity = new Vector2(moveDir * maxSpeed * (1 + 0.05f * GameManager.Instance.playerStat[1]), rigidBody.velocity.y);
             }
         }
         
@@ -123,6 +126,11 @@ public class Player : MonoBehaviour
     protected void Init()
     {
         GameManager.Instance.Player = this;
+        GameManager.Instance.camera = Camera.main;
+
+        GameManager.Instance.InitGame();
+
+        isPlaying = true;
 
         canControl = true;
         canInteract = false;
@@ -160,6 +168,7 @@ public class Player : MonoBehaviour
 
             if (Input.GetMouseButtonDown(1))
             {
+                Debug.Log("공격");
                 AnimationSetTrigger("NormalAttack");
             }
 
@@ -290,6 +299,8 @@ public class Player : MonoBehaviour
 
     public void GameOver()
     {
+        isPlaying = false;
+        Debug.Log("플레이어 사망");
         SceneManager.LoadScene("Result");
     }
 

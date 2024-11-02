@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1082829324626246365}
-  - component: {fileID: 8516056209240875947}
+  - component: {fileID: 4518536667417695127}
   - component: {fileID: 3417546543628363931}
   - component: {fileID: 8544723282114270031}
   - component: {fileID: 6756515046127504496}
@@ -70,7 +70,7 @@ Transform:
   - {fileID: 7131282082840488327}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8516056209240875947
+--- !u!114 &4518536667417695127
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -79,27 +79,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 5360483407220686942}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: edbaf8801094d694782490db8d5fed44, type: 3}
+  m_Script: {fileID: 11500000, guid: f63f7d5a502de8842bb02faef5734097, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  wallCheck:
+  - {fileID: 3340529352284980199}
+  - {fileID: 7131282082840488327}
   hitBoxCollider: {fileID: 8308854665965603294}
   attackCollider: {fileID: 0}
   animator: {fileID: 8544723282114270031}
   layerMask:
     serializedVersion: 2
     m_Bits: 64
-  currentHp: 2
+  Hp: 3
   isHit: 0
   isGround: 1
+  isDead: 0
   canAtk: 1
-  mobDirRight: 0
+  mobDirRight: 1
   atk: 1
   gold: 10
-  speed: 5
+  speed: 3
   jump: 10
-  wallCheck:
-  - {fileID: 3340529352284980199}
-  - {fileID: 7131282082840488327}
 --- !u!212 &3417546543628363931
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -286,7 +287,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3395522193276152326}
   - component: {fileID: 5277660535616012363}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: GoblinHitBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}

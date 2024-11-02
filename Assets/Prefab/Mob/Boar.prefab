@@ -190,24 +190,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edbaf8801094d694782490db8d5fed44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  wallCheck:
+  - {fileID: 3657945342790414977}
+  - {fileID: 7567129838823389925}
   hitBoxCollider: {fileID: 6290994311334224951}
   attackCollider: {fileID: 0}
   animator: {fileID: 7634161264037645078}
   layerMask:
     serializedVersion: 2
     m_Bits: 64
-  currentHp: 3
+  Hp: 5
   isHit: 0
   isGround: 1
+  isDead: 0
   canAtk: 1
   mobDirRight: 1
   atk: 1
   gold: 20
   speed: 5
   jump: 10
-  wallCheck:
-  - {fileID: 3657945342790414977}
-  - {fileID: 7567129838823389925}
 --- !u!212 &8039513169140617206
 SpriteRenderer:
   m_ObjectHideFlags: 0

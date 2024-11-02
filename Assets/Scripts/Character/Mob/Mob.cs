@@ -10,15 +10,17 @@ public class Mob : MonoBehaviour
     public delegate void DeathAction();
     public event DeathAction OnDeath;
 
+    public Transform[] wallCheck;
     public GameObject hitBoxCollider;
     public GameObject attackCollider;
     public Animator animator;
     public LayerMask layerMask;
 
-    public int currentHp;
+    public int Hp;
 
     public bool isHit = false;
     public bool isGround = true;
+    public bool isDead = false;
     public bool canAtk = true;
     public bool mobDirRight = true;
 
@@ -37,8 +39,25 @@ public class Mob : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
         animator = GetComponent<Animator>();
 
+        isHit = false;
+        isGround = true;
+        isDead = false;
+        canAtk = true;
+        mobDirRight = true;
+
         StartCoroutine(CalcCoolTime());
         StartCoroutine(ResetCollider());
+    }
+
+    protected void Update()
+    {
+        if (!isHit)
+        {
+            rigidbody.velocity = new Vector2(transform.localScale.x * speed, rigidbody.velocity.y);
+
+            if (Physics2D.OverlapCircle(wallCheck[0].position, 0.01f, layerMask) || !Physics2D.OverlapCircle(wallCheck[1].position, 0.01f, layerMask))
+                MobFlip();
+        }
     }
 
     IEnumerator ResetCollider()
@@ -135,17 +154,26 @@ public class Mob : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        currentHp -= damage;
+        if (isHit) return;
+
+        Hp -= damage;
         isHit = true;
-        if (currentHp <= 0)
+        rigidbody.velocity = Vector2.zero;
+        hitBoxCollider.SetActive(false);
+
+        if (Hp <= 0 && !isDead)
         {
-            GameManager.Instance.Player.Gold += (int)(gold * (1 + 0.1f * (float)GameManager.Instance.playerStat[2]));
+            GameManager.Instance.Player.Gold += (int)(gold * (1 + (0.1f * GameManager.Instance.playerStat[2])));
+            GameManager.Instance.earnGold += (int)(gold * (1 + (0.1f * GameManager.Instance.playerStat[2])));
+            GameManager.Instance.kill++;
+
+            GameManager.Instance.Player.tmpTxt.text = GameManager.Instance.Player.Gold.ToString();
+
             AnimationSetTrigger("Die");
         }
         else
         {
             AnimationSetTrigger("Hit");
-            rigidbody.velocity = Vector2.zero;
 
             if (transform.position.x > GameManager.Instance.Player.transform.position.x)
                 rigidbody.velocity = new Vector2(10f, 1f);
@@ -153,7 +181,7 @@ public class Mob : MonoBehaviour
                 rigidbody.velocity = new Vector2(-10f, 1f);
         }
 
-        hitBoxCollider.SetActive(false);
+        StartCoroutine(ResetCollider());
     }
 
     protected void OnTriggerEnter2D(Collider2D collision)
@@ -161,6 +189,11 @@ public class Mob : MonoBehaviour
         if (collision.transform.CompareTag("PlayerAttack"))
         {
             TakeDamage(GameManager.Instance.Player.Atk + GameManager.Instance.playerStat[0]);
+        }
+
+        if (collision.transform.CompareTag("PlayerHitBox"))
+        {
+            MobFlip();
         }
     }
 }

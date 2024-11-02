@@ -301,8 +301,8 @@ GameObject:
   - component: {fileID: 1482093040}
   - component: {fileID: 1482093044}
   - component: {fileID: 1482093043}
-  - component: {fileID: 1482093042}
   - component: {fileID: 1482093041}
+  - component: {fileID: 1482093045}
   m_Layer: 5
   m_Name: Exit
   m_TagString: Untagged
@@ -373,8 +373,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1482093042}
-        m_TargetAssemblyTypeName: SceneChangeBtn, Assembly-CSharp
+      - m_Target: {fileID: 1482093045}
+        m_TargetAssemblyTypeName: BtnScript, Assembly-CSharp
         m_MethodName: Exit
         m_Mode: 1
         m_Arguments:
@@ -385,19 +385,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &1482093042
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1482093039}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27f298ea3d586ac41a1ff752ea354e5f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneName: 
 --- !u!114 &1482093043
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -440,6 +427,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1482093039}
   m_CullTransparentMesh: 1
+--- !u!114 &1482093045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1482093039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6ee6539b7799c645b44af1e8b9a3b33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popUpUI: {fileID: 0}
+  timeStop: 0
+  sceneName: 
 --- !u!1 &1657222813
 GameObject:
   m_ObjectHideFlags: 0
@@ -558,7 +560,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 1
+  m_ScaleFactor: 0.48
   m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
@@ -624,7 +626,7 @@ GameObject:
   - component: {fileID: 2054983845}
   - component: {fileID: 2054983844}
   - component: {fileID: 2054983843}
-  - component: {fileID: 2054983842}
+  - component: {fileID: 2054983846}
   m_Layer: 5
   m_Name: GameStart
   m_TagString: Untagged
@@ -651,19 +653,6 @@ RectTransform:
   m_AnchoredPosition: {x: 498, y: -104.52}
   m_SizeDelta: {x: 793.9006, y: 209.0398}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2054983842
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2054983840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27f298ea3d586ac41a1ff752ea354e5f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneName: Stage
 --- !u!114 &2054983843
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -708,8 +697,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2054983842}
-        m_TargetAssemblyTypeName: SceneChangeBtn, Assembly-CSharp
+      - m_Target: {fileID: 2054983846}
+        m_TargetAssemblyTypeName: BtnScript, Assembly-CSharp
         m_MethodName: MoveScene
         m_Mode: 1
         m_Arguments:
@@ -762,6 +751,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2054983840}
   m_CullTransparentMesh: 1
+--- !u!114 &2054983846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2054983840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6ee6539b7799c645b44af1e8b9a3b33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popUpUI: {fileID: 0}
+  timeStop: 0
+  sceneName: Stage
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

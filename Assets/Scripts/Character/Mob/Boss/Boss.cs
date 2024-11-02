@@ -6,9 +6,10 @@ using UnityEngine.UI;
 
 public class Boss : MonoBehaviour
 {
-    public int health;
-    public int damage;
-    public int dashDamage;
+    public int health = 30;
+    public int damage = 1;
+    public int dashDamage = 3;
+
     private float timeBtwDamage = 1.5f;
 
     private Animator anim;
@@ -23,6 +24,7 @@ public class Boss : MonoBehaviour
     {
         if (health <= 0)
         {
+            isDead = true;
             anim.SetTrigger("Die");
         }
 
@@ -34,7 +36,13 @@ public class Boss : MonoBehaviour
 
     public void GameOver()
     {
-        SceneManager.LoadScene("Result");
+        if (isDead)
+        {
+            Debug.Log("º¸½º ÅðÄ¡");
+            SceneManager.LoadScene("Result");
+        }/*
+        Debug.Log("º¸½º ÅðÄ¡");
+        SceneManager.LoadScene("Result");*/
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

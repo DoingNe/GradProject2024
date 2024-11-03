@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,8 +14,8 @@ public class Player : MonoBehaviour
     public Animator animator;
     public GameObject hitBoxCollider;
     public GameObject weaponCollider;
-    public TMP_Text tmpTxt;
 
+    public GameObject Boss;
     public GameObject Door;
 
     public RectTransform heartPanel;
@@ -27,8 +26,6 @@ public class Player : MonoBehaviour
     [SerializeField]
     Transform groundCheck;
 
-    [SerializeField]
-    int hpMax;
     [SerializeField]
     int hp;
     [SerializeField]
@@ -44,21 +41,11 @@ public class Player : MonoBehaviour
     float hitRecovery = 1f;
     bool isGround;
     public bool isInvulnerable = false;
+    public bool isDead = false;
     public bool isPlaying;
     public bool canControl = true;
     public bool canInteract = false;
 
-    public int HPMax
-    {
-        get
-        {
-            return hpMax;
-        }
-        set
-        {
-            hpMax = value;
-        }
-    }
     public int Hp
     {
         get
@@ -91,7 +78,7 @@ public class Player : MonoBehaviour
         }
         set
         {
-            atk += value;
+            atk = value;
         }
     }
 
@@ -147,7 +134,7 @@ public class Player : MonoBehaviour
 
         StartCoroutine(ResetCollider());
 
-        for(int i = 0; i < HPMax; i++)
+        for(int i = 0; i < Hp; i++)
         {
             GameObject newHeart = Instantiate(heartImage, heartPanel);
             heartImages.Add(newHeart);
@@ -176,6 +163,10 @@ public class Player : MonoBehaviour
             {
                 StartCoroutine(CameraMovement.Instance.FadeOut());
                 ++GameManager.Instance.currentStage;
+                if(!Boss.gameObject.activeInHierarchy && GameManager.Instance.currentStage == 2)
+                {
+                    Boss.gameObject.SetActive(true);
+                }
                 transform.position = Door.transform.GetChild(0).position;
                 StartCoroutine(CameraMovement.Instance.FadeIn());
             }
@@ -265,19 +256,9 @@ public class Player : MonoBehaviour
         if (isInvulnerable) return;
 
         Hp -= damage;
-        Hp = Mathf.Clamp(Hp, 0, HPMax);
+        Hp = Mathf.Max(Hp, 0);
 
-        int heartsToRemove = heartImages.Count - hp;
-
-        for(int i = 0; i < heartsToRemove; i++)
-        {
-            if (heartImages.Count > 0)
-            {
-                GameObject heart = heartImages[heartImages.Count - 1];
-                heartImages.RemoveAt(heartImages.Count - 1);
-                Destroy(heart);
-            }
-        }
+        RemoveHeart(heartImages.Count - Hp);
 
         if (Hp <= 0)
         {
@@ -290,11 +271,39 @@ public class Player : MonoBehaviour
         StartCoroutine(ResetCollider());
     }
 
+    public void GainHeart(int count)
+    {
+        Hp += count;
+
+        for(int i = 0; i < count; i++)
+        {
+            GameObject newHeart = Instantiate(heartImage, heartPanel);
+            heartImages.Add(newHeart);
+        }
+    }
+
+    public void RemoveHeart(int heartsToRemove)
+    {
+        for (int i = 0; i < heartsToRemove; i++)
+        {
+            if (heartImages.Count > 0)
+            {
+                GameObject heart = heartImages[heartImages.Count - 1];
+                heartImages.RemoveAt(heartImages.Count - 1);
+                Destroy(heart);
+            }
+        }
+    }
+
     public void Die()
     {
-        canControl = false;
-        rigidBody.velocity = Vector2.zero;
-        AnimationSetTrigger("Die");
+        if (!isDead)
+        {
+            isDead = true;
+            canControl = false;
+            rigidBody.velocity = Vector2.zero;
+            AnimationSetTrigger("Die");
+        }
     }
 
     public void GameOver()

@@ -6,9 +6,9 @@ using UnityEngine.UI;
 
 public class Boss : MonoBehaviour
 {
-    public int health = 30;
-    public int damage = 1;
-    public int dashDamage = 3;
+    public int health = 50;
+    int damage = 1;
+    int dashDamage = 3;
 
     private float timeBtwDamage = 1.5f;
 
@@ -18,6 +18,10 @@ public class Boss : MonoBehaviour
     void Start()
     {
         anim = GetComponent<Animator>();
+
+        health = 50;
+        damage = 1;
+        dashDamage = 3;
     }
 
     void Update()
@@ -38,6 +42,7 @@ public class Boss : MonoBehaviour
     {
         if (isDead)
         {
+            GameManager.Instance.Player.isPlaying = false;
             Debug.Log("º¸½º ÅðÄ¡");
             SceneManager.LoadScene("Result");
         }/*

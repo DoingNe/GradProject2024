@@ -25,7 +25,7 @@ public class CameraMovement : MonoBehaviour
     public GameObject Player;
 
     public Image fadeImage;
-    float fadeDuration = 3f;
+    float fadeDuration = 1f;
 
     float offsetY = 1f;
     float offsetZ = -10f;
@@ -100,11 +100,14 @@ public class CameraMovement : MonoBehaviour
             yield return null;
         }
         SetAlpha(0f);
+        fadeImage.gameObject.SetActive(false);
     }
 
     public IEnumerator FadeOut()
     {
         float timer = 0f;
+
+        fadeImage.gameObject.SetActive(true);
 
         while (timer < fadeDuration)
         {

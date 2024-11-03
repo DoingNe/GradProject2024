@@ -141,9 +141,9 @@ public class Mob : MonoBehaviour
         else isGround = false;
     }
 
-    public void AttackColliderOnOff()
+    public void HitBoxColliderOnOff()
     {
-        attackCollider.SetActive(!attackCollider.activeInHierarchy);
+        hitBoxCollider.SetActive(!hitBoxCollider.activeInHierarchy);
     }
 
     public void setDeactive()
@@ -163,11 +163,11 @@ public class Mob : MonoBehaviour
 
         if (Hp <= 0 && !isDead)
         {
+            isDead = true;
+
             GameManager.Instance.Player.Gold += (int)(gold * (1 + (0.1f * GameManager.Instance.playerStat[2])));
             GameManager.Instance.earnGold += (int)(gold * (1 + (0.1f * GameManager.Instance.playerStat[2])));
             GameManager.Instance.kill++;
-
-            GameManager.Instance.Player.tmpTxt.text = GameManager.Instance.Player.Gold.ToString();
 
             AnimationSetTrigger("Die");
         }

@@ -9,13 +9,18 @@ public class GameManager : MonoBehaviour
     public Camera camera;
     public Player Player;
 
-    public int[] playerStat;        // 0 = atk, 1 = speed, 2 = gold
+    public int[] playerStat;        // 0 = atk, 1 = speed, 2 = gold, 3 = life
+
+    // 임시 지표
     public int kill;
     public int earnGold;
     public int spendGold;
     public float time;
 
     public int currentStage = 0;    // 0 = First stage, 1 = Second stage, 2 = Boss room
+
+    // 지표 구분
+    
 
     public static GameManager Instance
     {
@@ -37,19 +42,21 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        playerStat = new int[3];
+        playerStat = new int[4];
 
         InitGame();
     }
 
     private void FixedUpdate()
     {
+        // 플레이 시간 기록
         if (Instance.Player != null && Instance.Player.isPlaying)
         {
             time += Time.fixedDeltaTime;
         }
     }
 
+    // 초기화
     public void InitGame()
     {
         for (int i = 0; i < playerStat.Length; i++) playerStat[i] = 0;

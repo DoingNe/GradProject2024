@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+/*
+ * 결과창 UI
+ * 이번 게임의 결과를 표시
+ */
 public class ResultTextBox : MonoBehaviour
 {
     public Define.StatNum statNum;

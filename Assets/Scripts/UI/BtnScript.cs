@@ -17,15 +17,6 @@ public class BtnScript : MonoBehaviour
     public Define.StatNum statNum;                              // ½ºÅÈ Á¾·ù
     public string sceneName;                                    // ÀÌµ¿ÇÒ ¾À ÀÌ¸§
 
-    // ÆË¾÷
-    public void PopUp()
-    {
-        if (popUpUI != null)
-        {
-            popUpUI.SetActive(!popUpUI.activeInHierarchy);
-        }
-    }
-
     public void EnhancePopUp()
     {
         if (popUpUI != null)

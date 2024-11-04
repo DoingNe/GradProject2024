@@ -32,8 +32,6 @@ public class TextBoxUI : MonoBehaviour
         int minutes = (int)((floatTime % 3600) / 60);
         int seconds = (int)(floatTime % 60);
 
-        Debug.Log(string.Format("{0:D2}:{1:D2}:{2:D2}", hours, minutes, seconds));
-
         return string.Format("{0:D2}:{1:D2}:{2:D2}", hours, minutes, seconds);
     }
 }

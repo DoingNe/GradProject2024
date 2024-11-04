@@ -34,17 +34,15 @@ public class BtnScript : MonoBehaviour
             if (isEnhance && Time.timeScale == 1f && GameManager.Instance.Player.Gold >= int.Parse(costText.text))  // 열기
             {
                 Time.timeScale = 0f;            // 일시정지
-                Debug.Log("일시정지 타임스케일 = "+Time.timeScale);
 
                 GameManager.Instance.Player.Gold -= int.Parse(costText.text);   // 재화 차감
                 GameManager.Instance.spendGold += int.Parse(costText.text);
                 costText.text = (int.Parse(costText.text) + 25).ToString();
-                GameManager.Instance.Player.GainHeart(1);                       // 임시 체력 회복
+                GameManager.Instance.Player.GainHp();                       // 임시 체력 회복
                 popUpUI.SetActive(true);
             }
             else if (isEnhance && Time.timeScale == 0f)             // 닫기
             {
-                Debug.Log("일시정지 해제");
                 Time.timeScale = 1f;
                 popUpUI.SetActive(false);
             }
@@ -95,7 +93,7 @@ public class BtnScript : MonoBehaviour
     {
         if (statNum == Define.StatNum.Life)
         {
-            GameManager.Instance.Player.GainHeart(1);           // 체력 회복
+            GameManager.Instance.Player.GainHp();           // 체력 회복
         }
 
         GameManager.Instance.playerStat[(int)statNum]++;

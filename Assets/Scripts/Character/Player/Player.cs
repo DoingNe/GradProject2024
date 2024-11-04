@@ -23,9 +23,6 @@ public class Player : MonoBehaviour
     public GameObject Boss;                     // 보스
     public GameObject Door;                     // 문
 
-    public RectTransform heartPanel;            // 체력을 출력할 패널
-    public GameObject heartImage;
-
     public List<GameObject> heartImages = new List<GameObject>();
 
     [SerializeField]
@@ -50,6 +47,14 @@ public class Player : MonoBehaviour
     public bool isPlaying;
     public bool canControl = true;              // 컨트롤 제어
     public bool canInteract = false;            // 상호작용 제어
+
+    public int MaxHp
+    {
+        get
+        {
+            return maxHp;
+        }
+    }
 
     public int Hp
     {
@@ -125,9 +130,10 @@ public class Player : MonoBehaviour
         GameManager.Instance.InitGame();
 
         isPlaying = true;
-
         canControl = true;
         canInteract = false;
+
+        Hp = MaxHp;
         
         rigidBody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
@@ -140,12 +146,6 @@ public class Player : MonoBehaviour
         AnimationSetTrigger("Idle");
 
         StartCoroutine(ResetCollider());
-
-        for(int i = 0; i < Hp; i++)
-        {
-            GameObject newHeart = Instantiate(heartImage, heartPanel);
-            heartImages.Add(newHeart);
-        }
     }
 
     // 입력
@@ -282,11 +282,8 @@ public class Player : MonoBehaviour
     {
         if (isInvulnerable) return;
 
-        Hp -= damage;
-        Hp = Mathf.Max(Hp, 0);
-
         // 체력 감소
-        RemoveHeart(heartImages.Count - Hp);
+        LoseHp(damage);
 
         // 사망
         if (Hp <= 0)
@@ -302,30 +299,19 @@ public class Player : MonoBehaviour
     }
 
     // 체력 회복
-    public void GainHeart(int count)
+    public void GainHp()
     {
-        Hp += count;
-
-        for(int i = 0; i < count; i++)
-        {
-            GameObject newHeart = Instantiate(heartImage, heartPanel);
-            heartImages.Add(newHeart);
-        }
+        Hp += (int)(MaxHp * 0.8);
+        Hp = Mathf.Clamp(Hp, 0, 10);
     }
 
     // 체력 감소
-    public void RemoveHeart(int heartsToRemove)
+    public void LoseHp(int damage)
     {
-        for (int i = 0; i < heartsToRemove; i++)
-        {
-            if (heartImages.Count > 0)
-            {
-                GameObject heart = heartImages[heartImages.Count - 1];
-                heartImages.RemoveAt(heartImages.Count - 1);
-                Destroy(heart);
-            }
-        }
+        Hp -= damage;
+        Hp = Mathf.Clamp(Hp, 0, 10);
     }
+
 
     // 사망
     public void Die()

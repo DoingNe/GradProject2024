@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     Rigidbody2D rigidBody;
     SpriteRenderer spriteRenderer;
 
+    readonly int maxHp = 10;
     float moveDir;                              // 이동방향
     float refVelocity;
 
@@ -351,7 +352,8 @@ public class Player : MonoBehaviour
         // 함정과 충돌 시 즉사
         if (collision.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
         {
-            Die();
+            //TakeDamage();
+            TakeDamage(2, moveDir * Vector2.right.normalized);
         }
         // 문이랑 상호작용 가능
         if (collision.gameObject.layer == LayerMask.NameToLayer("InteractDoor"))
@@ -359,7 +361,7 @@ public class Player : MonoBehaviour
             canInteract = true;
             Door = collision.gameObject;
         }
-        // 피격 판정
+        // 몬스터 피격 판정
         if(collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
             Mob collisionMob = collision.gameObject.GetComponent<Mob>();
@@ -368,6 +370,14 @@ public class Player : MonoBehaviour
                 // 넉백 방향
                 Vector2 direction = (transform.position - collision.transform.position).normalized;
                 TakeDamage(collisionMob.atk, -direction);
+            }
+        }
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Boss"))
+        {
+            Boss collisionBoss = collision.gameObject.GetComponent<Boss>();
+            if(collisionBoss != null)
+            {
+                Vector2 direction = (transform.position - collision.transform.position).normalized;
             }
         }
     }

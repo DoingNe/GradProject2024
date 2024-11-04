@@ -25,8 +25,8 @@ TagManager:
   - InteractDoor
   - Boss
   - Dead
-  - 
-  - 
+  - BossHitBox
+  - BossAttack
   - 
   - 
   - 

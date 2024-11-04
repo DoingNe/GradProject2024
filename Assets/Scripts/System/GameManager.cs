@@ -61,6 +61,7 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < playerStat.Length; i++) playerStat[i] = 0;
 
+        currentStage = 0;       // 스테이지 초기화
         kill = 0;
         earnGold = 0;
         spendGold = 0;

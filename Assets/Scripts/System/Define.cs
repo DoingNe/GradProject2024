@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Define : MonoBehaviour
 {
-    public enum StatNum
+    public enum StatNum         // 스탯 구분
     {
         Atk,
         Spd,
@@ -13,7 +13,7 @@ public class Define : MonoBehaviour
         None,
     }
 
-    public enum ResultNum
+    public enum ResultNum       // 결과 지표 구분
     {
         Time,
         Kill,
@@ -22,7 +22,7 @@ public class Define : MonoBehaviour
         None,
     }
 
-    public enum TextBoxNum
+    public enum TextBoxNum      // 텍스트 박스 구분
     {
         Timer,
         Gold,

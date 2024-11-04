@@ -118,7 +118,6 @@ public class Player : MonoBehaviour
                 rigidBody.velocity = new Vector2(moveDir * maxSpeed * (1 + 0.05f * GameManager.Instance.playerStat[1]), rigidBody.velocity.y);
             }
         }
-        
     }
 
     // 플레이어 초기화
@@ -153,7 +152,7 @@ public class Player : MonoBehaviour
     {
         if (canControl)
         {
-            // 이동 방향 (좌 - A, 우 - B)
+            // 이동 방향 (좌 - A, 우 - D)
             moveDir = Input.GetAxisRaw("Horizontal");
 
             // 점프 (Space)
@@ -166,7 +165,6 @@ public class Player : MonoBehaviour
             // 공격 (마우스 우클릭)
             if (Input.GetMouseButtonDown(1))
             {
-                Debug.Log("공격");
                 AnimationSetTrigger("NormalAttack");
             }
 
@@ -329,17 +327,19 @@ public class Player : MonoBehaviour
     public void GameOver()
     {
         isPlaying = false;
-        Debug.Log("플레이어 사망 후 씬 이동");
         SceneManager.LoadScene("Result");
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // 함정과 충돌 시 즉사
+        // 함정과 충돌 시 2의 피해
         if (collision.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
         {
             //TakeDamage();
-            TakeDamage(2, moveDir * Vector2.right.normalized);
+            if (!isInvulnerable)
+            {
+                TakeDamage(2, moveDir * Vector2.right.normalized);
+            }
         }
         // 문이랑 상호작용 가능
         if (collision.gameObject.layer == LayerMask.NameToLayer("InteractDoor"))

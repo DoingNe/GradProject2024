@@ -63,8 +63,6 @@ public class BtnScript : MonoBehaviour
     {
         if (upgradeGoldText != null && GameManager.Instance.Player.Gold >= int.Parse(upgradeGoldText.text))
         {
-            int lv = GameManager.Instance.playerStat[(int)statNum];
-
             switch (statNum)
             {
                 case Define.StatNum.Atk:

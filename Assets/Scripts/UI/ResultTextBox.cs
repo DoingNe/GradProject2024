@@ -16,7 +16,7 @@ public class ResultTextBox : MonoBehaviour
 
     void Start()
     {
-        switch (statNum)
+        switch (statNum)                        // 스탯 강화 지표 출력
         {
             case Define.StatNum.Atk:
             case Define.StatNum.Spd:
@@ -30,16 +30,16 @@ public class ResultTextBox : MonoBehaviour
 
         switch (resultNum)
         {
-            case Define.ResultNum.Time:
+            case Define.ResultNum.Time:         // 플레이 타임 지표 출력
                 textBox.text = FormatTime(GameManager.Instance.time);
                 break;
-            case Define.ResultNum.Kill:
+            case Define.ResultNum.Kill:         // 킬 지표 출력
                 textBox.text = GameManager.Instance.kill.ToString();
                 break;
-            case Define.ResultNum.Gold:
+            case Define.ResultNum.Gold:         // 얻은 재화 지표 출력
                 textBox.text = GameManager.Instance.earnGold.ToString() + " G";
                 break;
-            case Define.ResultNum.Spend:
+            case Define.ResultNum.Spend:        // 소비한 재화 지표 출력
                 textBox.text = GameManager.Instance.spendGold.ToString() + " G";
                 break;
             default:

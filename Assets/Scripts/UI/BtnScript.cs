@@ -11,7 +11,8 @@ using UnityEngine.SceneManagement;
 public class BtnScript : MonoBehaviour
 {
     public GameObject popUpUI;                                  // 팝업창 오브젝트
-    public bool timeStop;                                       // 일시정지 여부
+    public bool isEnhance;                                      // 캠프파이어 버튼 여부
+    public TMP_Text costText;
     public TMP_Text upgradeGoldText;                            // 강화 시 필요 재화량을 표시할 텍스트 오브젝트
     public Define.StatNum statNum;                              // 스탯 종류
     public string sceneName;                                    // 이동할 씬 이름
@@ -21,17 +22,32 @@ public class BtnScript : MonoBehaviour
     {
         if (popUpUI != null)
         {
-            // 일시정지
-            if (timeStop && Time.timeScale == 1f)
-            {
-                Time.timeScale = 0f;
-            }
-            else if (timeStop && Time.timeScale == 0f)
-            {
-                Time.timeScale = 1f;
-            }
-
             popUpUI.SetActive(!popUpUI.activeInHierarchy);
+        }
+    }
+
+    public void EnhancePopUp()
+    {
+        if (popUpUI != null)
+        {
+            // 일시정지
+            if (isEnhance && Time.timeScale == 1f && GameManager.Instance.Player.Gold >= int.Parse(costText.text))  // 열기
+            {
+                Time.timeScale = 0f;            // 일시정지
+                Debug.Log("일시정지 타임스케일 = "+Time.timeScale);
+
+                GameManager.Instance.Player.Gold -= int.Parse(costText.text);   // 재화 차감
+                GameManager.Instance.spendGold += int.Parse(costText.text);
+                costText.text = (int.Parse(costText.text) + 25).ToString();
+                GameManager.Instance.Player.GainHeart(1);                       // 임시 체력 회복
+                popUpUI.SetActive(true);
+            }
+            else if (isEnhance && Time.timeScale == 0f)             // 닫기
+            {
+                Debug.Log("일시정지 해제");
+                Time.timeScale = 1f;
+                popUpUI.SetActive(false);
+            }
         }
     }
 

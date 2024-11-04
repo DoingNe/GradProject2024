@@ -21,4 +21,10 @@ public class Define : MonoBehaviour
         Spend,
         None,
     }
+
+    public enum TextBoxNum
+    {
+        Timer,
+        Gold,
+    }
 }

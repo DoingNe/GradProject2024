@@ -440,7 +440,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   popUpUI: {fileID: 0}
-  timeStop: 0
+  isEnhance: 0
+  costText: {fileID: 0}
   upgradeGoldText: {fileID: 0}
   statNum: 0
   sceneName: 
@@ -660,7 +661,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 1
-  m_Camera: {fileID: 0}
+  m_Camera: {fileID: 709930257}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -846,7 +847,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   popUpUI: {fileID: 0}
-  timeStop: 0
+  isEnhance: 0
+  costText: {fileID: 0}
   upgradeGoldText: {fileID: 0}
   statNum: 0
   sceneName: Stage

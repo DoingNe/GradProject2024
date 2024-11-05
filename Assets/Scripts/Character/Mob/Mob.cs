@@ -40,7 +40,7 @@ public class Mob : MonoBehaviour
         animator = GetComponent<Animator>();
 
         isHit = false;
-        isGround = true;
+        isGround = false;
         isDead = false;
         canAtk = true;
         mobDirRight = true;
@@ -193,7 +193,10 @@ public class Mob : MonoBehaviour
 
         if (collision.transform.CompareTag("PlayerHitBox"))
         {
-            MobFlip();
+            if (!GameManager.Instance.Player.isInvulnerable)
+            {
+                //MobFlip();
+            }
         }
     }
 }

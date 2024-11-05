@@ -8,9 +8,9 @@ public class Boar : Mob
     {
         base.Awake();
         Hp = 5;
-        speed = 5f;
+        speed = 10f;
         jump = 10f;
-        atk = 1;
+        atk = 2;
         gold = 20;
     }
 }

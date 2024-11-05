@@ -9,7 +9,7 @@ public class Goblin : Mob
     {
         base.Awake();
         Hp = 3;
-        speed = 3f;
+        speed = 5f;
         jump = 10f;
         atk = 1;
         gold = 10;

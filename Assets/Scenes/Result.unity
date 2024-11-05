@@ -954,7 +954,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Spend\t\t:"
+  m_text: "Spend Gold\t:"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5828a0fc52ec1c94cbdf00d1218a9522, type: 2}
   m_sharedMaterial: {fileID: -456764587879694789, guid: 5828a0fc52ec1c94cbdf00d1218a9522, type: 2}
@@ -1084,7 +1084,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   popUpUI: {fileID: 0}
-  timeStop: 0
+  isEnhance: 0
+  costText: {fileID: 0}
   upgradeGoldText: {fileID: 0}
   statNum: 0
   sceneName: Main
@@ -1235,7 +1236,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   popUpUI: {fileID: 0}
-  timeStop: 0
+  isEnhance: 0
+  costText: {fileID: 0}
   upgradeGoldText: {fileID: 0}
   statNum: 0
   sceneName: Stage
@@ -1608,7 +1610,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Gold\t\t:"
+  m_text: "Earn Gold\t:"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5828a0fc52ec1c94cbdf00d1218a9522, type: 2}
   m_sharedMaterial: {fileID: -456764587879694789, guid: 5828a0fc52ec1c94cbdf00d1218a9522, type: 2}

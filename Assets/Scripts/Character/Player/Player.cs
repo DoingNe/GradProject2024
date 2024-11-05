@@ -41,7 +41,7 @@ public class Player : MonoBehaviour
     float slideRate = 0.35f;
     [SerializeField]
     float hitRecovery = 1f;
-    bool isGround;
+    public bool isGround;
     public bool isInvulnerable = false;         // 무적 여부
     public bool isDead = false;
     public bool isPlaying;
@@ -177,7 +177,8 @@ public class Player : MonoBehaviour
                 // 보스룸 입장 시 보스 소환
                 if(!Boss.gameObject.activeInHierarchy && GameManager.Instance.currentStage == 2)
                 {
-                    Boss.gameObject.SetActive(true);
+                    GameOver();                                     // 보스 수정 중 2스테이지까지만 플레이
+                    //Boss.gameObject.SetActive(true);
                 }
 
                 // 스테이지 이동
@@ -204,7 +205,7 @@ public class Player : MonoBehaviour
             }
         }
         // 하강
-        else if (rigidBody.velocity.y < 0 && !IsPlayingAnimation("Jump"))
+        else if (rigidBody.velocity.y < 0 && !IsPlayingAnimation("Jump") && !isInvulnerable)
         {
             AnimationSetTrigger("Fall");
         }
@@ -236,6 +237,11 @@ public class Player : MonoBehaviour
     void isGrounded()
     {
         if (Physics2D.OverlapCapsule(groundCheck.position, new Vector2(0.3f, 0.15f), CapsuleDirection2D.Horizontal, 0, LayerMask.GetMask("Platform")))
+        {
+            animator.ResetTrigger("Idle");
+            isGround = true;
+        }
+        else if (Physics2D.OverlapCapsule(groundCheck.position, new Vector2(0.3f, 0.15f), CapsuleDirection2D.Horizontal, 0, LayerMask.GetMask("Obstacle")))
         {
             animator.ResetTrigger("Idle");
             isGround = true;
@@ -291,7 +297,7 @@ public class Player : MonoBehaviour
 
         // 넉백
         rigidBody.velocity = Vector2.zero;
-        rigidBody.AddForce(-(knockbackDirection+new Vector2(0f, 0.5f)) * 15f, ForceMode2D.Impulse);
+        rigidBody.AddForce((knockbackDirection+new Vector2(0f, 1f)) * 15f, ForceMode2D.Impulse);
         
         StartCoroutine(ResetCollider());
     }
@@ -338,7 +344,7 @@ public class Player : MonoBehaviour
             //TakeDamage();
             if (!isInvulnerable)
             {
-                TakeDamage(2, moveDir * Vector2.right.normalized);
+                TakeDamage(2, (moveDir * Vector2.right).normalized);
             }
         }
         // 문이랑 상호작용 가능
@@ -355,7 +361,7 @@ public class Player : MonoBehaviour
             {
                 // 넉백 방향
                 Vector2 direction = (transform.position - collision.transform.position).normalized;
-                TakeDamage(collisionMob.atk, -direction);
+                TakeDamage(collisionMob.atk, direction);
             }
         }
         if (collision.gameObject.layer == LayerMask.NameToLayer("Boss"))

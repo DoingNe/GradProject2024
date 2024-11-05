@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 142555845545229755}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.25, y: -0.5, z: 0}
+  m_LocalPosition: {x: 3.2, y: -0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 2785302856800245016}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.25, y: 0.5, z: 0}
+  m_LocalPosition: {x: 3.2, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -71,7 +71,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6767316294199639168}
-  - component: {fileID: 3593035055589554568}
+  - component: {fileID: 348707757434301276}
   m_Layer: 10
   m_Name: BoarHitBox
   m_TagString: Untagged
@@ -94,8 +94,8 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6223436600926691242}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &3593035055589554568
-BoxCollider2D:
+--- !u!70 &348707757434301276
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -123,22 +123,12 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.5}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0}
-    oldSize: {x: 1.58, y: 0.99}
-    newSize: {x: 1.58, y: 0.99}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1.58, y: 1}
-  m_EdgeRadius: 0
+  m_Offset: {x: -0.1704517, y: 2.012485}
+  m_Size: {x: 6.611888, y: 4.056873}
+  m_Direction: 1
 --- !u!1 &7212788453005453687
 GameObject:
   m_ObjectHideFlags: 0
@@ -150,9 +140,9 @@ GameObject:
   - component: {fileID: 6223436600926691242}
   - component: {fileID: 3141957473072454649}
   - component: {fileID: 8039513169140617206}
-  - component: {fileID: 3286743675880873068}
   - component: {fileID: 7745126237839411681}
   - component: {fileID: 7634161264037645078}
+  - component: {fileID: 2916359892108358890}
   m_Layer: 9
   m_Name: Boar
   m_TagString: Untagged
@@ -170,8 +160,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -12, z: 0}
-  m_LocalScale: {x: 4, y: 4, z: 4}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6767316294199639168}
   - {fileID: 3657945342790414977}
@@ -201,13 +191,13 @@ MonoBehaviour:
     m_Bits: 64
   Hp: 5
   isHit: 0
-  isGround: 1
+  isGround: 0
   isDead: 0
   canAtk: 1
   mobDirRight: 1
-  atk: 1
+  atk: 2
   gold: 20
-  speed: 5
+  speed: 4
   jump: 10
 --- !u!212 &8039513169140617206
 SpriteRenderer:
@@ -254,58 +244,13 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 2, y: 1.28}
+  m_DrawMode: 1
+  m_Size: {x: 8, y: 5.12}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &3286743675880873068
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7212788453005453687}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.5}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0}
-    oldSize: {x: 2, y: 1.28}
-    newSize: {x: 2, y: 1.28}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1.58, y: 1}
-  m_EdgeRadius: 0
 --- !u!50 &7745126237839411681
 Rigidbody2D:
   serializedVersion: 4
@@ -354,3 +299,38 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!70 &2916359892108358890
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7212788453005453687}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.17045166, y: 2.0124848}
+  m_Size: {x: 6.6118884, y: 4.056874}
+  m_Direction: 1

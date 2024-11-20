@@ -6,13 +6,25 @@ using UnityEngine.UI;
 
 public class Boss : MonoBehaviour
 {
+    public Define.BossState state;
+
     public int health = 50;
-    int damage = 1;
-    int dashDamage = 3;
+    public int damage = 2;
+    public int atkDamage = 3;
+    public int dashDamage = 5;
 
     private float timeBtwDamage = 1.5f;
 
+    public float lastDashAttackTime = -Mathf.Infinity;
+    public float lastMeleeAttackTime = -Mathf.Infinity;
+
     private Animator anim;
+    public GameObject hitBoxCollider;
+    public GameObject atkCollider;
+    public GameObject dashCollider;
+
+    public Slider hpBar;
+
     public bool isDead;
 
     void Start()
@@ -22,10 +34,17 @@ public class Boss : MonoBehaviour
         health = 50;
         damage = 1;
         dashDamage = 3;
+
+        hpBar.maxValue = health;
+        hpBar.minValue = 0;
+
+        InitCollider(true, false, false);
     }
 
     void Update()
     {
+        hpBar.value = health;
+
         if (health <= 0)
         {
             isDead = true;
@@ -50,9 +69,22 @@ public class Boss : MonoBehaviour
         SceneManager.LoadScene("Result");*/
     }
 
+    public void InitCollider(bool hitbox, bool atk, bool dash)
+    {
+        hitBoxCollider.SetActive(hitbox);
+        atkCollider.SetActive(atk);
+        dashCollider.SetActive(dash);
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.CompareTag("Player") && isDead == false)
+        if (collision.CompareTag("PlayerAttack"))
+        {
+            Debug.Log("플레이어 공격에 피격당함");
+            health = Mathf.Clamp(health - GameManager.Instance.Player.Atk, 0, 50);
+        }
+
+        /*if(collision.CompareTag("Player") && isDead == false)
         {
             if (timeBtwDamage <= 0)
             {
@@ -65,8 +97,7 @@ public class Boss : MonoBehaviour
                 {
                     collision.GetComponent<Player>().Hp -= damage;
                 }
-                
             }
-        }
+        }*/
     }
 }

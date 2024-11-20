@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class BossRunBehavior : StateMachineBehaviour
 {
-    public float speed;
+    Boss boss;
+
+    public float speed = 5;
     public float minTime;
     public float maxTime;
 
@@ -23,7 +25,10 @@ public class BossRunBehavior : StateMachineBehaviour
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        boss = animator.GetComponent<Boss>();
         bossTransform = animator.transform;
+        boss.state = Define.BossState.Run;
+        boss.InitCollider(true, false, false);
         rb = bossTransform.GetComponent<Rigidbody2D>();
         playerTransform = GameManager.Instance.Player.transform;
 
@@ -32,6 +37,8 @@ public class BossRunBehavior : StateMachineBehaviour
 
         // 타이머 초기화
         timer = Random.Range(minTime, maxTime);
+
+        animator.ResetTrigger("Run");
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -53,6 +60,11 @@ public class BossRunBehavior : StateMachineBehaviour
         {
             timer -= Time.deltaTime; // 타이머 감소
         }
+
+        if (Vector3.Distance(bossTransform.position, playerTransform.position) <= 50f)
+        {
+            animator.SetTrigger("Chase");
+        }
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -70,9 +82,9 @@ public class BossRunBehavior : StateMachineBehaviour
     private void UpdateDirectionBasedOnPlayer()
     {
         // 플레이어와의 거리 및 위치에 따라 방향을 업데이트
-        if (playerTransform != null && (Mathf.Abs(playerTransform.position.x - bossTransform.position.x) < 15f && Mathf.Abs(playerTransform.position.y - bossTransform.position.y) < 15f))
+        if (playerTransform != null && (Mathf.Abs(playerTransform.position.x - bossTransform.position.x) < 10f && Mathf.Abs(playerTransform.position.y - bossTransform.position.y) < 15f))
         {
-            direction = (playerTransform.position - bossTransform.position).normalized;
+            direction = new Vector2(playerTransform.position.x - bossTransform.position.x, 0f).normalized;
         }
     }
 

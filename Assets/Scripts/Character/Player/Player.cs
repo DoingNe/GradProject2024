@@ -21,6 +21,7 @@ public class Player : MonoBehaviour
     public GameObject weaponCollider;           // 공격 판정
 
     public GameObject Boss;                     // 보스
+    public GameObject BossUI;
     public GameObject Door;                     // 문
 
     public List<GameObject> heartImages = new List<GameObject>();
@@ -177,8 +178,11 @@ public class Player : MonoBehaviour
                 // 보스룸 입장 시 보스 소환
                 if(!Boss.gameObject.activeInHierarchy && GameManager.Instance.currentStage == 2)
                 {
-                    GameOver();                                     // 보스 수정 중 2스테이지까지만 플레이
-                    //Boss.gameObject.SetActive(true);
+                    Boss.gameObject.SetActive(true);
+                    if (!BossUI.activeSelf)
+                    {
+                        BossUI.SetActive(true);
+                    }
                 }
 
                 // 스테이지 이동
@@ -364,12 +368,43 @@ public class Player : MonoBehaviour
                 TakeDamage(collisionMob.atk, direction);
             }
         }
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Boss"))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Boss") || collision.gameObject.layer == LayerMask.NameToLayer("BossAttack"))
         {
             Boss collisionBoss = collision.gameObject.GetComponent<Boss>();
+
+            if (collisionBoss==null)
+            {
+                collisionBoss = collision.gameObject.transform.parent.gameObject.GetComponent<Boss>();
+            }
+            
             if(collisionBoss != null)
             {
                 Vector2 direction = (transform.position - collision.transform.position).normalized;
+
+                switch (collisionBoss.state)
+                {
+                    case Define.BossState.Idle:
+                    case Define.BossState.Run:
+                    case Define.BossState.Chase:
+                    case Define.BossState.Stun:
+                        Debug.Log("보스 몸빵 맞음");
+                        TakeDamage(collisionBoss.damage, direction);
+                        break;
+                    case Define.BossState.MeleeAttack:
+                        Debug.Log("보스 평타 맞음");
+                        TakeDamage(collisionBoss.atkDamage, direction);
+                        break;
+                    case Define.BossState.Dash:
+                        Debug.Log("보스 대시 맞음");
+                        TakeDamage(collisionBoss.dashDamage, direction);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                Debug.Log("보스 스크립트를 찾을 수 없음");
             }
         }
     }

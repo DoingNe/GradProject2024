@@ -27,4 +27,15 @@ public class Define : MonoBehaviour
         Timer,
         Gold,
     }
+
+    public enum BossState
+    {
+        Idle,
+        Run,
+        Chase,
+        MeleeAttack,
+        Dash,
+        Stun,
+        Die,
+    }
 }
